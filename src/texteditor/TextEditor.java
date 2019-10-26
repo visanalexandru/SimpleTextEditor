@@ -7,7 +7,6 @@ import java.io.*;
 import java.awt.event.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.plaf.metal.*;
 
 class TextEditor implements ActionListener, KeyListener, DocumentListener {
 

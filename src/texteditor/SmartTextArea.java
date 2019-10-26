@@ -9,6 +9,8 @@ package texteditor;
  *
  * @author gvisan
  */
+import java.util.ArrayList;
+import javafx.util.Pair;
 import javax.swing.*;
 import javax.swing.text.*;
 
@@ -49,14 +51,15 @@ public class SmartTextArea extends JTextArea {
         return array;
     }
 
-    private void kmp_algorithm(String pattern) {
+    private ArrayList<Pair<Integer, Integer>> kmp_algorithm(String pattern) {
         remove_highlights();
         Highlighter highlighter = getHighlighter();
 
         String text = getText();
+        ArrayList<Pair<Integer, Integer>> to_return = new ArrayList<>();
 
         if (pattern.length() > text.length()) {
-            return;
+            return to_return;//return empty arraylist
         }
         int[] lsp_array = create_lsp_array(pattern);
 
@@ -72,11 +75,7 @@ public class SmartTextArea extends JTextArea {
 
                 if (last_found == -1 || j - last_found >= i) {
 
-                    try {
-                        highlighter.addHighlight(j - i, j, DefaultHighlighter.DefaultPainter);
-                    } catch (BadLocationException e) {
-
-                    }
+                    to_return.add(new Pair<>(j - i, j));
                     last_found = j;
                 }
 
@@ -93,11 +92,26 @@ public class SmartTextArea extends JTextArea {
             }
 
         }
+        return to_return;
 
     }
 
+    void add_highlights(ArrayList<Pair<Integer, Integer>> intervals) {
+
+        for (int i = 0; i < intervals.size(); i++) {
+            try {
+                int a = intervals.get(i).getKey();
+                int b = intervals.get(i).getValue();
+
+                getHighlighter().addHighlight(a, b, DefaultHighlighter.DefaultPainter);
+            } catch (BadLocationException e) {
+
+            }
+        }
+    }
+
     public void highlight_pattern(String pattern) {
-        kmp_algorithm(pattern);
+        add_highlights(kmp_algorithm(pattern));
         has_highlights = true;
     }
 
