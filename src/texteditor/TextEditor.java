@@ -32,7 +32,7 @@ class TextEditor implements ActionListener, KeyListener, DocumentListener {
         UIManager.put("nimbusRed", new Color(169, 46, 34));
         UIManager.put("nimbusSelectedText", new Color(255, 255, 255));
         UIManager.put("nimbusSelectionBackground", new Color(104, 93, 156));
-        UIManager.put("text", new Color(230, 230, 230));
+        UIManager.put("text", new Color(0, 230, 0));
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
