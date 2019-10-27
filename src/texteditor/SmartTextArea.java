@@ -51,12 +51,12 @@ public class SmartTextArea extends JTextArea {
         return array;
     }
 
-    private ArrayList<Pair<Integer, Integer>> kmp_algorithm(String pattern) {
+    private ArrayList<Integer> kmp_algorithm(String pattern) {
         remove_highlights();
         Highlighter highlighter = getHighlighter();
 
         String text = getText();
-        ArrayList<Pair<Integer, Integer>> to_return = new ArrayList<>();
+        ArrayList<Integer> to_return = new ArrayList<>();
 
         if (pattern.length() > text.length()) {
             return to_return;//return empty arraylist
@@ -75,7 +75,7 @@ public class SmartTextArea extends JTextArea {
 
                 if (last_found == -1 || j - last_found >= i) {
 
-                    to_return.add(new Pair<>(j - i, j));
+                    to_return.add(j-i);
                     last_found = j;
                 }
 
@@ -96,13 +96,12 @@ public class SmartTextArea extends JTextArea {
 
     }
 
-    void add_highlights(ArrayList<Pair<Integer, Integer>> intervals) {
+    private void add_highlights(ArrayList<Integer>intervals,int pattern_length) {
 
         for (int i = 0; i < intervals.size(); i++) {
             try {
-                int a = intervals.get(i).getKey();
-                int b = intervals.get(i).getValue();
-
+                int a = intervals.get(i);
+                int b = a+pattern_length;
                 getHighlighter().addHighlight(a, b, DefaultHighlighter.DefaultPainter);
             } catch (BadLocationException e) {
 
@@ -111,7 +110,7 @@ public class SmartTextArea extends JTextArea {
     }
 
     public void highlight_pattern(String pattern) {
-        add_highlights(kmp_algorithm(pattern));
+        add_highlights(kmp_algorithm(pattern),pattern.length());
         has_highlights = true;
     }
 
