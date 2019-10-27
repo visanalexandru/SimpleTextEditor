@@ -64,6 +64,7 @@ class TextEditor implements ActionListener, KeyListener, DocumentListener {
         JMenuItem item_new = new JMenuItem("Open");
         JMenuItem item_save = new JMenuItem("Save");
         JMenuItem item_find = new JMenuItem("Find");
+        JMenuItem item_find_and_replace = new JMenuItem("Find and replace");
 
         JMenuItem item_new_document = new JMenuItem("New Document");
 
@@ -73,12 +74,14 @@ class TextEditor implements ActionListener, KeyListener, DocumentListener {
         item_save.addActionListener(this);
         item_new_document.addActionListener(this);
         item_find.addActionListener(this);
+        item_find_and_replace.addActionListener(this);
 
         file_menu.add(item_new);
         file_menu.add(item_save);
         file_menu.add(item_new_document);
 
         find_menu.add(item_find);
+        find_menu.add(item_find_and_replace);
 
         menu_bar.add(file_menu);
         menu_bar.add(find_menu);
@@ -169,6 +172,31 @@ class TextEditor implements ActionListener, KeyListener, DocumentListener {
 
     }
 
+    void dialogue_replace_pattern() {
+        JPanel pane = new JPanel();
+        pane.setLayout(new GridLayout(0, 2, 2, 2));
+
+        JTextField to_find = new JTextField(5);
+        JTextField replace = new JTextField(5);
+
+        pane.add(new JLabel("Find"));
+        pane.add(to_find);
+
+        pane.add(new JLabel("Replace with"));
+        pane.add(replace);
+        int option = JOptionPane.showConfirmDialog(frame, pane, "Find and replace", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+
+        if (option == JOptionPane.YES_OPTION) {
+            String find_string = to_find.getText();
+            String replace_string = replace.getText();
+
+            if (find_string.length() > 0 && replace_string.length() > 0) {
+                text_area.replace_pattern(find_string, replace_string);
+            }
+        }
+
+    }
+
     void set_empty_document() {
         text_area.setText("");
         set_opened_file(null);
@@ -184,6 +212,8 @@ class TextEditor implements ActionListener, KeyListener, DocumentListener {
             set_empty_document();
         } else if (action.equals("Find")) {
             dialogue_find_pattern();
+        } else if (action.equals("Find and replace")) {
+            dialogue_replace_pattern();
         }
 
     }
@@ -203,12 +233,18 @@ class TextEditor implements ActionListener, KeyListener, DocumentListener {
         return event.isControlDown() && event.getKeyCode() == KeyEvent.VK_F;
     }
 
+    private boolean is_replace_key(KeyEvent event) {
+        return event.isControlDown() && event.getKeyCode() == KeyEvent.VK_R;
+    }
+
     @Override
     public void keyPressed(KeyEvent event) {
         if (is_save_key(event)) {
             dialogue_save_file();
         } else if (is_find_key(event)) {
             dialogue_find_pattern();
+        } else if (is_replace_key(event)) {
+            dialogue_replace_pattern();
         }
     }
 

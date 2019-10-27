@@ -75,7 +75,7 @@ public class SmartTextArea extends JTextArea {
 
                 if (last_found == -1 || j - last_found >= i) {
 
-                    to_return.add(j-i);
+                    to_return.add(j - i);
                     last_found = j;
                 }
 
@@ -96,12 +96,12 @@ public class SmartTextArea extends JTextArea {
 
     }
 
-    private void add_highlights(ArrayList<Integer>intervals,int pattern_length) {
+    private void add_highlights(ArrayList<Integer> intervals, int pattern_length) {
 
         for (int i = 0; i < intervals.size(); i++) {
             try {
                 int a = intervals.get(i);
-                int b = a+pattern_length;
+                int b = a + pattern_length;
                 getHighlighter().addHighlight(a, b, DefaultHighlighter.DefaultPainter);
             } catch (BadLocationException e) {
 
@@ -109,9 +109,25 @@ public class SmartTextArea extends JTextArea {
         }
     }
 
+    private void replace(ArrayList<Integer> intervals, int pattern_length, String to_replace) {
+        int offset = 0;
+        int offset_add = pattern_length - to_replace.length();
+        for (int i = 0; i < intervals.size(); i++) {
+            int here = intervals.get(i) - offset;
+            String text_here = getText().substring(0, here);
+            String text_after = getText().substring(here + pattern_length);
+            setText(text_here + to_replace + text_after);
+            offset += offset_add;
+        }
+    }
+
     public void highlight_pattern(String pattern) {
-        add_highlights(kmp_algorithm(pattern),pattern.length());
+        add_highlights(kmp_algorithm(pattern), pattern.length());
         has_highlights = true;
+    }
+
+    public void replace_pattern(String pattern, String replaced) {
+        replace(kmp_algorithm(pattern), pattern.length(), replaced);
     }
 
     public SmartTextArea() {
