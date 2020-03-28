@@ -10,7 +10,6 @@ package texteditor;
  * @author gvisan
  */
 import java.util.ArrayList;
-import javafx.util.Pair;
 import javax.swing.*;
 import javax.swing.text.*;
 
